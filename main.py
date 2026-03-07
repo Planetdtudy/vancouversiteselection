@@ -4,38 +4,49 @@ from pathlib import Path
 import scripts.config
 import geopandas as gpd
 
+
+# This prints the Coordinate Reference System (encoding) of the file on disk
+#print(gpd.read_file(r"D:\GEO\vancouver-site-selection\data\kontur_population_CA_20231101.gpkg", rows=0).crs)
+
 # Load the file your main.py just saved
-test_gdf = gpd.read_file(r"D:\GEO\vancouver-site-selection\output\vancouver_population_subset.geojson")
+#test_gdf = gpd.read_file(r"D:\GEO\vancouver-site-selection\output\vancouver_population_subset.geojson")
 
-print(f"1. CRS of the file: {test_gdf.crs}")
-print(f"2. First 2 coordinates: \n{test_gdf.geometry.head(2)}")
-print(f"3. Total bounds: {test_gdf.total_bounds}")
+#print(f"1. CRS of the file: {test_gdf.crs}")
+#print(f"2. First 2 coordinates: \n{test_gdf.geometry.head(2)}")
+#print(f"3. Total bounds: {test_gdf.total_bounds}")
 
-print("--- DEBUG START ---")
-print(f"File location: {scripts.config.__file__}")
-print(f"Variables found: {[v for v in dir(scripts.config) if not v.startswith('__')]}")
-print("--- DEBUG END ---")
+#print("--- DEBUG START ---")
+#print(f"File location: {scripts.config.__file__}")
+#print(f"Variables found: {[v for v in dir(scripts.config) if not v.startswith('__')]}")
+#print("--- DEBUG END ---")
 
 config_path = Path(scripts.config.__file__)
 content = config_path.read_text()
 
-print("--- FILE CONTENT CHECK ---")
-print(f"File size: {config_path.stat().st_size} bytes")
-print("Full Content below:")
-print(f"'{content}'")
-print("--- END CHECK ---")
+#print("--- FILE CONTENT CHECK ---")
+#print(f"File size: {config_path.stat().st_size} bytes")
+#print("Full Content below:")
+#print(f"'{content}'")
+#print("--- END CHECK ---")
 from scripts.config import  POPULATION_FILE, OUTPUT_DIR, BOUNDARY_FILE
 from scripts.data_processor import VancouverProcessor
+
+meta_1 = gpd.read_file(POPULATION_FILE, rows=1)
+print(f"Rows=1 CRS: {meta_1.crs}")
+print("\n--- Data Sample ---")
+print(meta_1.head()) # Shows the first 5 rows
+print(meta_1.info()) # Shows column types and memory usage
+print(f"Current Shape: {meta_1.shape}")
 
 def main():
     print("--- Starting Vancouver Spatial ETL Pipeline ---")
     
-    # 1. Ensure output directory exists
+    #  Ensure output directory exists
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
         print(f"Created output directory at: {OUTPUT_DIR}")
 
-    # 2. Initialize the Processor (OOP)
+    #  Initialize the Processor (OOP)
     # We pass the paths from our config into the class
     processor = VancouverProcessor(
         boundary_path=BOUNDARY_FILE , 
@@ -48,7 +59,7 @@ def main():
         boundary = processor.load_boundary()
         print("Boundary loaded successfully.")
 
-        # 4. Extract and Clip the data
+        # Extract and Clip the data
         vancouver_pop = processor.clip_population()
         print(f"Successfully extracted {len(vancouver_pop)} population hexagons.")
 
