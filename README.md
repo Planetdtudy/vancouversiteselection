@@ -27,8 +27,5 @@ Technical Stack
 
 📁 Project Structure
 ```text
-├── api/             # FastAPI handlers and communication protocols
-├── core/            # Optimization algorithms and spatial logic
 ├── data/            # PostGIS migrations and ETL pipelines
-├── tests/           # Unit, integration, and AI-generated edge-case tests
 └── scripts/         # Deployment and environment utilities
